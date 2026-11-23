@@ -1,21 +1,21 @@
 import { u } from './scale';
 
-// Placeholder for the popup with the profile picture and button.
+// Placeholder for the popup with the profile picture and button: a plain div.
 // Put its contents in as children when that component exists.
-export default function ScreenPopup({ children }) {
+const BOX = {
+  desktop: { left: 86, top: 47, width: 880, height: 451 },
+  tablet: { left: 40, top: 80, width: 460, height: 610 },
+  phone: { left: 28, top: 77, width: 300, height: 467 },
+};
+
+export default function ScreenPopup({ layout = 'desktop', children }) {
+  const b = BOX[layout];
   return (
     <div
       className="screen-popup"
-      style={{ left: u(86), top: u(47), width: u(880), height: u(451) }}
+      style={{ left: u(b.left), top: u(b.top), width: u(b.width), height: u(b.height) }}
     >
-      <div className="screen-popup__bar" style={{ height: u(43), paddingLeft: u(18) }}>
-        <svg viewBox="0 0 74 18" style={{ width: u(74), height: u(18) }} aria-hidden="true">
-          <circle cx="9" cy="9" r="9" fill="#F4538A" />
-          <circle cx="37" cy="9" r="9" fill="#78EB7B" />
-          <circle cx="65" cy="9" r="9" fill="#F5DD61" />
-        </svg>
-      </div>
-      <div className="screen-popup__content">{children}</div>
+      {children}
     </div>
   );
 }

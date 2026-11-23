@@ -1,26 +1,69 @@
+import { useEffect } from 'react';
 import Key, { keyWidth } from './Key';
-import { u } from './scale';
+import { u, TIMING } from './scale';
+import { playSound } from './sounds';
 
-// Rows in keyboard coordinates (Figma px). Each key is 71 wide, the space 383.
-// `gap` is the space between keys in that row.
-const ROWS = [
-  { x: 141.2, y: 6.75, gap: 3.6, keys: Array(10).fill('green') },
-  { x: 106, y: 50, gap: 4.65, keys: ['green', 'pink', ...Array(9).fill('green')] },
-  { x: 124.7, y: 93, gap: 7.16, keys: ['pink', 'pink', 'pink', ...Array(7).fill('green')] },
-  { x: 90, y: 134, gap: 7.3, keys: ['green', 'green', 'green', 'space', 'green', 'green', 'green'] },
-];
+// Rows in keyboard coordinates (Figma px). Each key is 71 wide, the space 383,
+// a phone key 73. `gap` is the space between keys in that row.
+const ROWS = {
+  desktop: [
+    { x: 141.2, y: 6.75, gap: 3.6, keys: Array(10).fill('green') },
+    { x: 106, y: 50, gap: 4.65, keys: ['green', 'pink', ...Array(9).fill('green')] },
+    { x: 124.7, y: 93, gap: 7.16, keys: ['pink', 'pink', 'pink', ...Array(7).fill('green')] },
+    { x: 90, y: 134, gap: 7.3, keys: ['green', 'green', 'green', 'space', 'green', 'green', 'green'] },
+  ],
+  phone: [
+    { x: 55, y: 80, gap: 11, keys: Array(3).fill('phone') },
+    { x: 55, y: 161, gap: 11, keys: Array(3).fill('phone') },
+    { x: 55, y: 232, gap: 11, keys: Array(3).fill('phone') },
+  ],
+};
 
 // Flatten rows into positioned keys, numbered in the order they appear.
-const KEYS = [];
-ROWS.forEach((row) => {
-  let x = row.x;
-  row.keys.forEach((variant) => {
-    KEYS.push({ variant, x, y: row.y, index: KEYS.length });
-    x += keyWidth(variant) + row.gap;
+// rowStarts = index of the first key in each row (for the row sound).
+function buildKeys(rows) {
+  const keys = [];
+  const rowStarts = [];
+  rows.forEach((row) => {
+    rowStarts.push(keys.length);
+    let x = row.x;
+    row.keys.forEach((variant) => {
+      keys.push({ variant, x, y: row.y, index: keys.length });
+      x += keyWidth(variant) + row.gap;
+    });
   });
-});
+  return { keys, rowStarts };
+}
+const LAYOUTS = { desktop: buildKeys(ROWS.desktop), phone: buildKeys(ROWS.phone) };
 
-export default function Keyboard({ onLogin }) {
+export const keyCount = (layout) => LAYOUTS[layout].keys.length;
+
+export default function Keyboard({ layout = 'desktop', onLogin }) {
+  const { keys, rowStarts } = LAYOUTS[layout];
+
+  // One sound as each row starts rising.
+  useEffect(() => {
+    const timers = rowStarts.map((i) =>
+      setTimeout(() => playSound('keyRow', { volume: 0.7 }), TIMING.keys + i * TIMING.keyStagger)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [rowStarts]);
+
+  if (layout === 'phone') {
+    return (
+      <div className="keyboard keyboard--phone" style={{ left: u(20), top: u(613), width: u(352), height: u(654) }}>
+        <div className="keyboard__phone-body" style={{ top: u(45), height: u(609) }} />
+        <div className="keyboard__hinge" style={{ left: u(66), width: u(220), height: u(68) }} />
+        {keys.map((k) => (
+          <Key key={k.index} {...k} onPress={onLogin} />
+        ))}
+        <button type="button" className="sr-only" onClick={onLogin}>
+          Log in
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div
       className="keyboard"
@@ -51,7 +94,7 @@ export default function Keyboard({ onLogin }) {
         />
       </svg>
 
-      {KEYS.map((k) => (
+      {keys.map((k) => (
         <Key key={k.index} {...k} onPress={onLogin} />
       ))}
 

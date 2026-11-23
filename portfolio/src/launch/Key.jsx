@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { u } from './scale';
-import { playClick } from './clickSound';
+import { playSound } from './sounds';
 
 // Key art from Figma, drawn inline so colors are just props.
 const KEY = {
@@ -19,36 +19,52 @@ const SPACE = {
   front: 'M2.55249 26.8424L380.498 26.9449C380.8 35.0177 381.684 43.2009 381.669 51.2623C381.663 54.0462 381.591 55.3073 379.561 57.3275C370.857 58.2229 361.736 57.7271 352.985 57.7104L307.069 57.6116L156.691 57.5429C120.012 57.7723 83.3316 57.7864 46.6525 57.585C34.9085 57.559 12.0874 59.0964 1.48069 56.6876C0.159668 47.2178 1.91201 36.424 2.55249 26.8424Z',
 };
 
+// Flip-phone key: rounded rectangle with a 4px shadow underneath.
+const PHONE = { width: 73, height: 64, viewBox: '0 0 73 64' };
+
 const COLORS = {
   green: { top: '#EDEFC2', front: '#6B9981' },
   pink: { top: '#E89EAD', front: '#CE5B6E' },
   space: { top: '#EDEFC2', front: '#229D9E' },
+  phone: { top: '#EDEFC2', front: '#4B4848' },
 };
 
-export const keyWidth = (variant) => (variant === 'space' ? SPACE.width : KEY.width);
+const SHAPES = { space: SPACE, phone: PHONE };
+
+export const keyWidth = (variant) => (SHAPES[variant] || KEY).width;
 
 export default function Key({ variant = 'green', x, y, index, onPress }) {
-  const shape = variant === 'space' ? SPACE : KEY;
+  const shape = SHAPES[variant] || KEY;
   const color = COLORS[variant];
   // A key only reacts once it has finished rising in.
   const [ready, setReady] = useState(false);
 
   return (
     <div
-      className="key"
+      className={`key key--${variant}`}
       data-ready={ready}
       style={{ left: u(x), top: u(y), width: u(shape.width), height: u(shape.height), '--i': index }}
-      onPointerEnter={() => ready && playClick(0.6)}
+      onPointerEnter={() => ready && playSound('click', { volume: 0.6, vary: true })}
       onClick={() => {
-        playClick(1);
+        playSound('click', { vary: true });
         onPress?.();
       }}
       aria-hidden="true"
     >
       <div className="key__rise" onAnimationEnd={() => setReady(true)}>
         <svg className="key__cap" viewBox={shape.viewBox} preserveAspectRatio="none">
-          <path d={shape.front} fill={color.front} stroke="#000" strokeWidth="1.5" strokeLinejoin="bevel" />
-          <path d={shape.top} fill={color.top} stroke="#000" strokeWidth="1.5" strokeLinejoin="bevel" />
+          {variant === 'phone' ? (
+            <>
+              {/* shadow stays put; the face slides down over it when pressed */}
+              <rect x="0.5" y="4.5" width="72" height="58" rx="12" fill={color.front} />
+              <rect className="key__face" x="0.5" y="0.5" width="72" height="58" rx="12" fill={color.top} stroke={color.front} />
+            </>
+          ) : (
+            <>
+              <path d={shape.front} fill={color.front} stroke="#000" strokeWidth="1.5" strokeLinejoin="bevel" />
+              <path d={shape.top} fill={color.top} stroke="#000" strokeWidth="1.5" strokeLinejoin="bevel" />
+            </>
+          )}
         </svg>
       </div>
     </div>
