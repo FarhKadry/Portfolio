@@ -1,0 +1,202 @@
+/* ---------- Stage: keeps the 1280 × 936 illustration fitted to the screen ---------- */
+.launch {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: #f3f5d7;
+  overflow: hidden;
+}
+
+.launch__stage {
+  position: relative;
+  width: min(100vw, calc(100dvh * 1280 / 936));
+  aspect-ratio: 1280 / 936;
+  container-type: inline-size;
+}
+
+.launch__scene {
+  --u: calc(100cqw / 1280); /* 1 Figma px */
+  position: absolute;
+  inset: 0;
+}
+
+.launch__scene > * {
+  position: absolute;
+}
+
+/* ---------- Device ---------- */
+.device {
+  box-sizing: border-box;
+  background: #edefc2;
+  border-radius: calc(34 * var(--u));
+  animation: device-in 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+/* border drawn on top so children use the outer edge as (0,0) */
+.device::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: calc(4 * var(--u)) solid #4b4848;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.device__chin-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: max(1px, calc(1 * var(--u)));
+  background: #000;
+}
+.device__power {
+  position: absolute;
+  border-radius: 50%;
+  background: #c30344;
+}
+
+/* ---------- Screen popup (placeholder) ---------- */
+.screen-popup {
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: #06b8ba;
+  border: max(1px, calc(1 * var(--u))) solid #191919;
+  border-radius: calc(30 * var(--u));
+  box-shadow: calc(2 * var(--u)) calc(2 * var(--u)) 0 #191919;
+  overflow: hidden;
+  transform-origin: 50% 60%;
+  animation: popup-in 450ms cubic-bezier(0.3, 1.3, 0.5, 1) var(--t-popup) both;
+}
+.screen-popup__bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  background: #fffce5;
+  border-bottom: max(1px, calc(1 * var(--u))) solid #191919;
+  box-shadow: 0 calc(4 * var(--u)) 0 #191919;
+}
+.screen-popup__content {
+  flex: 1;
+  position: relative;
+}
+
+/* ---------- Keyboard ---------- */
+.keyboard {
+  animation: device-in 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.keyboard__body {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---------- Key ---------- */
+.key {
+  position: absolute;
+  overflow: hidden; /* the "slot": keys rise out of it and sink into it */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.key[data-ready='false'] {
+  pointer-events: none;
+}
+.key__rise {
+  position: absolute;
+  inset: 0;
+  animation: key-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t-keys) + var(--i) * var(--t-key-stagger));
+}
+.key__cap {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transition: transform 110ms ease-out;
+}
+@media (hover: hover) {
+  .key:hover .key__cap {
+    transform: translateY(calc(3 * var(--u)));
+  }
+}
+.key:active .key__cap {
+  transform: translateY(calc(7 * var(--u)));
+  transition-duration: 50ms;
+}
+
+/* ---------- Sticker ---------- */
+.sticker {
+  touch-action: none; /* lets touch drag without scrolling the page */
+  cursor: grab;
+  user-select: none;
+  outline: none;
+}
+.sticker[data-dragging='true'] {
+  cursor: grabbing;
+}
+.sticker__art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: transform 150ms ease-out, filter 150ms ease-out;
+  animation: sticker-in 420ms cubic-bezier(0.3, 1.4, 0.5, 1) var(--delay) both;
+}
+@media (hover: hover) {
+  .sticker:hover .sticker__art {
+    transform: rotate(-4deg) scale(1.04);
+  }
+}
+.sticker[data-dragging='true'] .sticker__art {
+  transform: rotate(-6deg) scale(1.1);
+  filter: drop-shadow(calc(4 * var(--u)) calc(6 * var(--u)) 0 rgba(25, 25, 25, 0.35));
+}
+.sticker:focus-visible .sticker__art {
+  outline: 2px solid #191919;
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+/* ---------- Animations ---------- */
+@keyframes device-in {
+  from { opacity: 0; transform: translateY(calc(40 * var(--u))) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes popup-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes key-in {
+  from { transform: translateY(105%); }
+  to { transform: none; }
+}
+@keyframes sticker-in {
+  from { opacity: 0; transform: scale(0.3) rotate(-25deg); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Reduced motion: everything just appears. Durations stay at 1ms (not "none")
+   so keys still get their animationend and become interactive. */
+@media (prefers-reduced-motion: reduce) {
+  .device,
+  .keyboard,
+  .screen-popup,
+  .key__rise,
+  .sticker__art {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
