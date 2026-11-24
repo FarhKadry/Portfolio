@@ -1,0 +1,86 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: all 300ms ease-in-out;
+    scroll-behavior: smooth;
+    font-family: "Biroclage grotesque", sans-serif;
+    position: relative;
+}
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+  
+}
+::-webkit-scrollbar-thumb {
+  background: #FFF4E2;
+}
+body{
+    position: relative;
+    max-width: 100vw;
+    overflow-x: hidden;
+    background-color: var(--mainBg, #F3F5D7);
+}
+h1{
+  font-size: 102px;
+}
+.h1_2{
+  font-size: 142px;
+}
+h2{
+  font-size: 95px;
+}
+.h2_2{
+  font-size: 88px;
+}
+h3{
+  font-size: 62px;
+}
+h4{
+  font-size: 42px;
+}
+h5{
+  font-size: 32px;
+}
+h6{
+  font-size: 24px;
+}
+.text_extraBold{
+  font-weight: 900;
+}
+.text_bold{
+  font-weight: 700;
+}
+.text_medium{
+  font-weight: 500;
+}
+.text_regular{
+  font-weight: 400;
+}
+.text_light{
+  font-weight: 300
+}
+.font_pink1{
+  color: var(--accent1Lvl1)
+}
+.font_pink2{
+  color: var(--accent1Lvl2);
+}
+.font_teal1{
+  color: var(--accent2Lvl2);
+}
+.font_teal2{
+  color: var(--accent2Lvl2);
+}
+.text_shadow1{
+  text-shadow: 0 11.54px 0 var(--mediumBlack);
+}
+.text_shadow2{
+ text-shadow: 0 5px 0 var(--mediumBlack);
+}
+.text_shadow3{
+  text-shadow: 3px 4px 0 var(--mediumBlack);
+}

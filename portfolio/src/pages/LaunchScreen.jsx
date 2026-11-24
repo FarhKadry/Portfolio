@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import './../styles/general.css';
+import './../styles/root.css';
 import Device from './../launch/Device';
 import ScreenPopup from './../launch/ScreenPopup';
 import Keyboard, { keyCount } from './../launch/Keyboard';

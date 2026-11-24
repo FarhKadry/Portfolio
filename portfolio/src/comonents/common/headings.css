@@ -1,0 +1,18 @@
+.mainFont{
+    font-family: "Biroclage grotesque", sans-serif;
+    color: var(--accent2Lvl1, #06B8BA);
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Bricolage Grotesque";
+    font-size: 67.228px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: -3px;
+    -webkit-text-stroke: 3px #191919;
+  paint-order: stroke fill;
+  /* text-shadow: 0 8.655px 0 #191919; */
+}
+.shadow1{
+    text-shadow: 0 7px 0 #191919;
+}

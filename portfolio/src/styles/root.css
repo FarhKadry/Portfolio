@@ -1,0 +1,21 @@
+:root {
+  /* Backgrounds */
+  --mainBg: #F3F5D7;
+  --secondaryBg: #EDEFC2;
+  --thirdBg: #FFFCE5;
+
+  /* Blacks */
+  --lightBlack: #231F20;
+  --mediumBlack: #191919;
+  --pitchBlack: #000000;
+
+  /* Accent 1 — pink */
+  --accent1Lvl1: #F63B7B;
+  --accent1Lvl2: #F4538A;
+
+  /* Accent 2 — teal */
+  --accent2Lvl1: #06B8BA;
+  --accent2Lvl2: #229D9E;
+  /* Extra */
+  --extraAccent: #F5DD61;
+}
