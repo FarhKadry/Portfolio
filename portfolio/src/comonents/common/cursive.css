@@ -1,21 +1,9 @@
 .cursive{
         font-family: "Pacifico", cursive;
-        color: var(--accent1Lvl2, #F4538A);
-        -webkit-text-stroke-width: 1.68px;
-        -webkit-text-stroke-color: var(--mediumBlack, #191919);
         font-family: Pacifico;
-        font-size: 71.685px;
         font-style: normal;
         font-weight: 400;
         line-height: normal;
         letter-spacing: -3px;
-        color: #f23983;
-        -webkit-text-stroke: 1px;
-        -webkit-text-stroke: 2px #191919;
         paint-order: stroke fill;
-        text-shadow: 0 7px 0 #191919;
-}
-.Launch_Name .cursive{
-
-    
 }

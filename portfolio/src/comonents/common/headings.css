@@ -9,10 +9,13 @@
     font-weight: 600;
     line-height: normal;
     letter-spacing: -3px;
-    -webkit-text-stroke: 3px #191919;
+    -webkit-text-stroke: 4px #191919;
   paint-order: stroke fill;
   /* text-shadow: 0 8.655px 0 #191919; */
 }
 .shadow1{
     text-shadow: 0 7px 0 #191919;
+}
+.text_tilt{
+  transform: rotate(-5deg);
 }
