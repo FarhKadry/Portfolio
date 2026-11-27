@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { SCENES, u } from './scale';
-import { playSound } from './sounds';
+import { playSound } from '../utils/sounds';
 
 let topZ = 20; // the last sticker you touch goes on top
 

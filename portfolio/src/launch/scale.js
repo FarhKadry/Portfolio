@@ -31,12 +31,20 @@ const getLayout = () =>
       : 'desktop';
 export const useLayout = () => useSyncExternalStore(subscribe, getLayout);
 
-// Animation timeline (ms)
+// Animation timeline (ms).
+// Preloader: plays first; when loading is done its window shrinks into the
+// screen (morph). Everything below counts from the end of that morph.
 export const TIMING = {
-  device: 0,        // device shell slides in (600ms)
-  popup: 450,       // screen popup pops in (450ms) + swoosh sound
-  keyboard: 900,    // keyboard slides in (500ms)
-  keys: 1400,       // first key starts rising
-  keyStagger: 40,   // gap between keys
+  morph: 700,          // preloader window → monitor screen
+  device: 0,           // monitor / phone frame grows in around the screen (600ms)
+  message: 150,        // message window springs in (desktop)
+  messageWords: 450,   // its text, word by word
+  logo: 250,           // "Farh Kadry!" letters, one by one
+  avatar: 650,         // profile picture
+  button: 850,         // Log in button
+  sidebar: 300,        // socials side menu slides in
+  keyboard: 900,       // keyboard slides in (500ms)
+  keys: 1400,          // first key starts rising
+  keyStagger: 40,      // gap between keys
   stickerStagger: 120, // stickers start right after the last key
 };

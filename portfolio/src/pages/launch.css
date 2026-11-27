@@ -57,11 +57,20 @@
 }
 
 /* ---------- Device ---------- */
+/* The screen is already in place when the device mounts (the preloader shrank
+   into it), so only the frame animates: background, outline and details grow
+   in around the screen, which itself stays still. */
 .device {
   box-sizing: border-box;
-  background: #edefc2;
   border-radius: calc(34 * var(--u));
-  animation: device-in 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.device::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #edefc2;
+  border-radius: inherit;
+  animation: frame-in 600ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--t-device, 0ms) both;
 }
 /* border drawn on top so children use the outer edge as (0,0) */
 .device::after {
@@ -71,6 +80,10 @@
   border: calc(4 * var(--u)) solid #4b4848;
   border-radius: inherit;
   pointer-events: none;
+  animation: frame-in 600ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--t-device, 0ms) both;
+}
+.device > span {
+  animation: fade-in-plain 300ms ease-out 350ms both;
 }
 .device__chin-line {
   position: absolute;
@@ -84,7 +97,7 @@
   border-radius: 50%;
   background: #c30344;
 }
-.device--phone {
+.device--phone::before {
   box-shadow: 0 calc(4 * var(--u)) 0 #4b4848;
 }
 .device__dot {
@@ -93,33 +106,152 @@
   background: #4b4848;
 }
 
-/* ---------- Screen popup (placeholder) ---------- */
+/* ---------- Screen popup ---------- */
+/* Window look matches the preloader's final (morphed) state exactly. */
 .screen-popup {
   position: absolute;
-  display:flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: column;
-
-  box-sizing: border-box;
-  background: #06b8ba;
-  border: max(1px, calc(1 * var(--u))) solid #191919;
-  border-radius: calc(30 * var(--u));
-  box-shadow: calc(2 * var(--u)) calc(2 * var(--u)) 0 #191919;
-  overflow: hidden;
-  transform-origin: 50% 60%;
-  animation: popup-in 450ms cubic-bezier(0.3, 1.3, 0.5, 1) var(--t-popup) both;
+  z-index: 1;
+  --win-radius: calc(30 * var(--u));
+  --win-border: max(1px, calc(1 * var(--u)));
+  --win-shadow-x: calc(2 * var(--u));
+  --win-shadow-y: calc(2 * var(--u));
+  --head-h: calc(43 * var(--u));
+  --head-pad: calc(18 * var(--u));
+  --head-border: max(1px, calc(1 * var(--u)));
+  --head-shadow: calc(4 * var(--u));
+  --dot: calc(18 * var(--u));
+  --dot-gap: calc(10 * var(--u));
+}
+/* content is placed in the screen's own Figma coordinates */
+.screen-popup > .window__body {
+  position: absolute;
+  inset: 0;
 }
 
-.popup__head{
-  width: 100%;
+/* Per layout: centre points (x, y) and sizes in Figma px */
+.screen-popup[data-layout='desktop'] {
+  --logo-x: 452; --logo-y: 152; --logo-size: 53.76; --logo-tilt: -5deg;
+  --avatar-x: 440; --avatar-y: 242; --avatar: 114;
+  --btn-x: 440; --btn-y: 373; --btn-size: 24;
+}
+.screen-popup[data-layout='tablet'] {
+  --logo-x: 230; --logo-y: 214; --logo-size: 64; --logo-tilt: 0deg;
+  --avatar-x: 230; --avatar-y: 284; --avatar: 132;
+  --btn-x: 230; --btn-y: 448; --btn-size: 24;
+}
+.screen-popup[data-layout='phone'] {
+  --logo-x: 151.5; --logo-y: 166.6; --logo-size: 48.52; --logo-tilt: 0deg;
+  --avatar-x: 150; --avatar-y: 204.5; --avatar: 94;
+  --btn-x: 150; --btn-y: 327.5; --btn-size: 18;
+}
+
+/* "Farh Kadry!" */
+.popup__logo {
+  position: absolute;
+  left: calc(var(--logo-x) * var(--u));
+  top: calc(var(--logo-y) * var(--u));
+  translate: -50% -50%;
+  rotate: var(--logo-tilt);
+  z-index: 2;
+  white-space: nowrap;
+  font-size: calc(var(--logo-size) * var(--u));
+  line-height: 1;
+}
+.logo__F { font-size: 1.3335em; letter-spacing: -0.18em; }   /* 71.69px */
+.logo__arh { letter-spacing: -0.12em; }
+.logo__space { letter-spacing: -0.12em; }
+.logo__K { font-size: 1.116em; letter-spacing: -0.02em; }   /* 60px */
+.logo__adry { letter-spacing: -0.09em; }
+.logo__bang { letter-spacing: -0.04em; }
+/* phone & tablet frames use one size and Medium weight for the whole logo */
+.screen-popup:not([data-layout='desktop']) .popup__logo span {
+  font-size: 1em;
+}
+.screen-popup:not([data-layout='desktop']) .popup__logo .font_bricolage {
+  font-weight: 500;
+}
+
+/* profile picture */
+.popup__avatar {
+  position: absolute;
+  left: calc(var(--avatar-x) * var(--u));
+  top: calc(var(--avatar-y) * var(--u));
+  translate: -50% -50%;
+  z-index: 1;
+  --delay: var(--t-avatar);
+}
+
+/* Log in button: sized from one font-size (see button.css) */
+.popup__button {
+  position: absolute;
+  left: calc(var(--btn-x) * var(--u));
+  top: calc(var(--btn-y) * var(--u));
+  translate: -50% -50%;
+  animation: rise-in 600ms var(--spring) var(--t-button) both;
+}
+.popup__btn {
+  font-size: calc(var(--btn-size) * var(--u));
+}
+
+/* ---------- Message window (desktop) ---------- */
+/* Figma: 241 × 192 at (47, 83) on the screen */
+.message {
+  position: absolute;
+  left: calc(47.17 * var(--u));
+  top: calc(83 * var(--u));
+  width: calc(241 * var(--u));
+  height: calc(192 * var(--u));
+  z-index: 1;
+  transform-origin: 30% 20%;
+  --win-bg: var(--accent2Lvl2, #229D9E);
+  --win-radius: calc(9.66 * var(--u));
+  --win-border: max(1px, calc(0.69 * var(--u)));
+  --win-shadow-x: calc(2.07 * var(--u));
+  --win-shadow-y: calc(1.38 * var(--u));
+  --head-h: calc(29.68 * var(--u));
+  --head-pad: calc(12.42 * var(--u));
+  --head-border: max(1px, calc(0.69 * var(--u)));
+  --head-shadow: calc(2.76 * var(--u));
+  --dot: calc(12.42 * var(--u));
+  --dot-gap: calc(6.9 * var(--u));
+}
+.message__content {
   display: flex;
-  padding: 10.182px 26.182px;
-  border-radius: 17.455px 17.455px 0 0;
-border: 1px 0 0 1px solid var(--mediumBlack, #191919);
-background: var(--thirdBg, #FFFCE5);
-box-shadow: 0 3px 0 0 #191919;
+  flex-direction: column;
+  align-items: center;
+  padding-top: calc(16.9 * var(--u));
 }
+.message__icon {
+  width: calc(39 * var(--u));
+  height: calc(31.7 * var(--u));
+}
+.message__icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.message__badge {
+  position: absolute;
+  right: calc(-4.6 * var(--u));
+  top: calc(-2.3 * var(--u));
+  width: calc(10.23 * var(--u));
+  height: calc(10.23 * var(--u));
+  border-radius: 50%;
+  background: #c30344;
+}
+.message__title {
+  margin-top: calc(7.24 * var(--u));
+  font-size: calc(14 * var(--u));
+  line-height: 1.2;
+}
+.message__text {
+  width: calc(175 * var(--u));
+  margin-top: calc(14 * var(--u));
+  font-size: calc(16 * var(--u));
+  line-height: 1.35;
+  text-align: center;
+}
+
 /* ---------- Keyboard ---------- */
 .keyboard {
   animation: device-in 500ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--t-keyboard) both;
@@ -291,8 +423,16 @@ box-shadow: 0 3px 0 0 #191919;
   from { opacity: 0; transform: translateY(calc(40 * var(--u))) scale(0.97); }
   to { opacity: 1; transform: none; }
 }
-@keyframes popup-in {
-  from { opacity: 0; transform: scale(0.85); }
+@keyframes frame-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in-plain {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(calc(30 * var(--u))); }
   to { opacity: 1; transform: none; }
 }
 @keyframes key-in {
@@ -307,9 +447,11 @@ box-shadow: 0 3px 0 0 #191919;
 /* Reduced motion: everything just appears. Durations stay at 1ms (not "none")
    so keys still get their animationend and become interactive. */
 @media (prefers-reduced-motion: reduce) {
-  .device,
+  .device::before,
+  .device::after,
+  .device > span,
   .keyboard,
-  .screen-popup,
+  .popup__button,
   .key__rise,
   .sticker__body {
     animation-duration: 1ms !important;

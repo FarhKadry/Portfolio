@@ -8,6 +8,4 @@ const Cursive = ({ text }) => {
     </> );
 }
  
-export default Cursive;<>
-
-</>
+export default Cursive;

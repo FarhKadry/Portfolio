@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Key, { keyWidth } from './Key';
 import { u, TIMING } from './scale';
-import { playSound } from './sounds';
+import { playSound } from '../utils/sounds';
 
 // Rows in keyboard coordinates (Figma px). Each key is 71 wide, the space 383,
 // a phone key 73. `gap` is the space between keys in that row.

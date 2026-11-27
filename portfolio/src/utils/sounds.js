@@ -1,16 +1,20 @@
-// All launch-screen sounds. To swap in your own, replace the mp3 files in
-// ./sounds/ with the same names (or change the imports below).
+// Every sound on the site. To swap one, replace the mp3 in assets/sounds/
+// with the same name (or change the imports below).
 //
 // Browsers keep audio muted until the visitor clicks, taps or presses a key
-// somewhere on the page. Until then playSound() does nothing (no errors).
+// somewhere on the page. Until then playSound() quietly does nothing.
 import clickUrl from './../assets/sounds/key-click.mp3';
 import keyRowUrl from './../assets/sounds/key-row.mp3';
 import swooshUrl from './../assets/sounds/swoosh.mp3';
+import buttonUrl from './../assets/sounds/click.mp3';
+import characterUrl from './../assets/sounds/character-hover.mp3';
 
 const FILES = {
-  click: clickUrl,   // key hover / press
-  keyRow: keyRowUrl, // each row of keys appearing
-  swoosh: swooshUrl, // screen appearing
+  click: clickUrl,         // key hover / press
+  keyRow: keyRowUrl,       // each row of keys appearing
+  swoosh: swooshUrl,       // screen appearing
+  button: buttonUrl,       // buttons
+  character: characterUrl, // hovering the character
 };
 
 let ctx = null;
@@ -28,7 +32,8 @@ function getContext() {
 // Fetch + decode every file once, so playback has no delay.
 export function preloadSounds() {
   const c = getContext();
-  if (!c || loading) return loading;
+  if (!c) return Promise.resolve();
+  if (loading) return loading;
   loading = Promise.all(
     Object.entries(FILES).map(async ([name, url]) => {
       try {
@@ -45,9 +50,17 @@ export function preloadSounds() {
 export function unlockAudio() {
   const c = getContext();
   if (c && c.state === 'suspended') c.resume();
+  preloadSounds(); // pages other than the launch screen load their sounds here
 }
 
-// vary: small random pitch change so repeated clicks don't sound robotic
+// Unlock on the first interaction anywhere on the site, on every page.
+if (typeof window !== 'undefined') {
+  ['pointerdown', 'keydown', 'touchstart'].forEach((ev) =>
+    window.addEventListener(ev, unlockAudio, { once: true, passive: true })
+  );
+}
+
+// vary: small random pitch change so repeated sounds don't feel robotic
 export function playSound(name, { volume = 1, vary = false } = {}) {
   if (!ctx || ctx.state !== 'running' || !buffers[name]) return;
   const source = ctx.createBufferSource();

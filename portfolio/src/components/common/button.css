@@ -1,0 +1,75 @@
+/* Every size here is in em, so the whole button (padding, radius, shadow,
+   icon) scales from one font-size. Size classes below only set font-size. */
+.btn1{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35em;
+    min-width: 9.6em;              /* 230px at 24px, like Figma */
+    padding: 0.5em 1.2em;
+    border: 1px solid var(--lightBlack, #231F20);
+    border-radius: 0.5em;          /* 12px at 24px */
+    background: var(--thirdBg, #FFFCE5);
+    color: var(--mediumBlack, #191919);
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    filter: drop-shadow(0.04em 0.375em 0 #191919);   /* the thick shadow underneath */
+    -webkit-tap-highlight-color: transparent;
+    transition: filter 150ms ease-out, background-color 150ms ease-out, box-shadow 150ms ease-out, transform 150ms ease-out;
+}
+.btn1__label{
+    font-size: inherit;
+    font-weight: inherit;
+}
+/* the arrow is hidden until hover */
+.btn1__icon{
+    width: 0;
+    height: auto;
+    transform: rotate(0deg);
+    transition: transform 0.2s ease-in-out 250ms, width 0.3s ease-in-out;
+}
+
+/* Pressed look: sinks onto its shadow, arrow slides in */
+@media (hover: hover){
+    .btn1:hover{
+        filter: drop-shadow(0 0 0 #191919);
+        transform: translateY(0.06em);
+        box-shadow: 0 0.125em 0 0 rgba(0, 0, 0, 0.29) inset;
+        background-color: var(--secondaryBg);
+    }
+    .btn1:hover .btn1__icon{
+        width: 1.4em;
+        transform: rotate(-8deg);
+    }
+}
+/* touch screens get the pressed look while the finger is down */
+.btn1:active{
+    filter: drop-shadow(0 0 0 #191919);
+    transform: translateY(0.06em);
+    box-shadow: 0 0.125em 0 0 rgba(0, 0, 0, 0.29) inset;
+    background-color: var(--secondaryBg);
+    transition-duration: 60ms;
+}
+.btn1:focus-visible{
+    outline: 2px solid var(--mediumBlack);
+    outline-offset: 0.5em;
+}
+
+/* ---------- Sizes ---------- */
+/* Regular pages: 24px on desktop, down to 18px on phones */
+.btn_size1{
+    font-size: clamp(18px, 0.75vw + 14px, 24px);
+}
+/* Wider button (phone Figma: 230 × 46 at 18px) */
+.btn_wide{
+    min-width: 12.8em;
+}
+
+.btn_size1Cont{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 100px;
+}

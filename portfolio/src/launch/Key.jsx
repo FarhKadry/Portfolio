@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { u } from './scale';
-import { playSound } from './sounds';
+import { playSound } from '../utils/sounds';
 
 // Key art from Figma, drawn inline so colors are just props.
 const KEY = {

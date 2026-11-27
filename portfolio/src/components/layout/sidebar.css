@@ -1,0 +1,128 @@
+/* Figma: 74px wide panel flush to the left edge, 39px icons, 16px gap,
+   rounded on the right, 1px outline and a 2/3px solid shadow. */
+.sidebar {
+  --w: 74px;
+  --icon: 39px;
+  --peek: 12px; /* how much panel stays visible when tucked */
+  position: fixed;
+  left: 0;
+  top: clamp(90px, 18vh, 170px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  transform: translateX(0);
+  transition: transform 450ms cubic-bezier(0.3, 1.2, 0.5, 1);
+  animation: sidebar-in 600ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--delay, 0ms) both;
+}
+.sidebar[data-open='false'] {
+  transform: translateX(calc(var(--peek) - var(--w)));
+}
+
+.sidebar__panel {
+  width: var(--w);
+  padding: 20px 0;
+  background: var(--secondaryBg, #EDEFC2);
+  border: 1px solid var(--mediumBlack, #191919);
+  border-left: none;
+  border-radius: 0 20px 20px 0;
+  box-shadow: 2px 3px 0 var(--mediumBlack, #191919);
+}
+.sidebar__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.sidebar__link {
+  display: block;
+  width: var(--icon);
+  height: var(--icon);
+  transition: transform 150ms ease-out;
+}
+@media (hover: hover) {
+  a.sidebar__link:hover {
+    transform: rotate(-8deg) scale(1.1);
+  }
+}
+.sidebar__icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* empty slot until the icons come from Supabase */
+.sidebar__slot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1.5px dashed var(--lightBlack, #231F20);
+  border-radius: 10px;
+  opacity: 0.35;
+}
+
+/* the pull tab */
+.sidebar__toggle {
+  width: 22px;
+  height: 44px;
+  margin-left: -1px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: var(--secondaryBg, #EDEFC2);
+  color: var(--mediumBlack, #191919);
+  border: 1px solid var(--mediumBlack, #191919);
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 2px 3px 0 var(--mediumBlack, #191919);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.sidebar__toggle svg {
+  width: 8px;
+  height: 14px;
+  transition: transform 300ms ease-in-out;
+}
+.sidebar[data-open='false'] .sidebar__toggle svg {
+  transform: rotate(180deg);
+}
+.sidebar__toggle:focus-visible {
+  outline: 2px solid var(--mediumBlack);
+  outline-offset: 2px;
+}
+
+/* tablet */
+@media (max-width: 1024px) {
+  .sidebar {
+    --w: 62px;
+    --icon: 32px;
+  }
+}
+/* phone */
+@media (max-width: 600px) {
+  .sidebar {
+    --w: 52px;
+    --icon: 28px;
+    --peek: 6px;
+    top: 30vh;
+  }
+  .sidebar__panel {
+    padding: 14px 0;
+    border-radius: 0 14px 14px 0;
+  }
+  .sidebar__list {
+    gap: 12px;
+  }
+}
+
+@keyframes sidebar-in {
+  from { opacity: 0; translate: -100% 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar {
+    transition-duration: 1ms;
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+}

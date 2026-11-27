@@ -1,15 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './../styles/general.css';
 import './../styles/root.css';
+import './../styles/animations.css';
 import Device from './../launch/Device';
 import ScreenPopup from './../launch/ScreenPopup';
 import Keyboard, { keyCount } from './../launch/Keyboard';
 import Sticker from './../launch/Sticker';
-import { preloadSounds, unlockAudio, playSound } from './../launch/sounds';
+import Preloader from './../preloader/Preloader';
+import { useAssetLoader } from './../preloader/useAssetLoader';
+import Sidebar from './../components/layout/Sidebar';
+import { playSound } from './../utils/sounds';
 import { TIMING, useLayout } from './../launch/scale';
 import smiley from './../assets/sticker-smiley.svg';
 import headphones from './../assets/sticker-headphones.svg';
 import star from './../assets/sticker-star.svg';
+import arrow from './../assets/arrow.svg';
+import envelope from './../assets/envelope.svg';
 import './launch.css';
 
 // Starting spots, in Figma px (same as the design), per layout.
@@ -30,20 +37,30 @@ STICKERS.tablet = [
   { id: 'headphones', label: 'Headphones', src: headphones, x: 22, y: 370, width: 90, height: 90, peel: 126 },
 ];
 
-export default function LaunchScreen({ onLogin }) {
-  const layout = useLayout();
+// Everything the launch screen shows, so the preloader can load it first.
+const IMAGES = [smiley, headphones, star, arrow, envelope];
 
-  // Sound can only start after the visitor's first click, tap or key press.
+// Phases: 'loading' (preloader) → 'morph' (its window shrinks into the screen)
+// → 'launch' (device, popup, keyboard and stickers animate in around it).
+export default function LaunchScreen() {
+  const layout = useLayout();
+  const navigate = useNavigate();
+  const loader = useAssetLoader({ images: IMAGES });
+  const [phase, setPhase] = useState('loading');
+
   useEffect(() => {
-    preloadSounds();
-    const events = ['pointerdown', 'keydown'];
-    events.forEach((ev) => window.addEventListener(ev, unlockAudio, { once: true }));
-    const swoosh = setTimeout(() => playSound('swoosh'), TIMING.popup);
-    return () => {
-      events.forEach((ev) => window.removeEventListener(ev, unlockAudio));
-      clearTimeout(swoosh);
-    };
-  }, []);
+    if (loader.done) setPhase((p) => (p === 'loading' ? 'morph' : p));
+  }, [loader.done]);
+
+  useEffect(() => {
+    if (phase !== 'morph') return;
+    playSound('swoosh');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const t = setTimeout(() => setPhase('launch'), reduced ? 0 : TIMING.morph);
+    return () => clearTimeout(t);
+  }, [phase]);
+
+  const goHome = () => navigate('/home');
 
   // Stickers pop in once the last key has risen (tablet has no keys:
   // they come in right after the screen).
@@ -55,22 +72,30 @@ export default function LaunchScreen({ onLogin }) {
       <div
         className="launch__stage"
         style={{
-          '--t-popup': `${TIMING.popup}ms`,
+          '--t-device': `${TIMING.device}ms`,
           '--t-keyboard': `${TIMING.keyboard}ms`,
           '--t-keys': `${TIMING.keys}ms`,
           '--t-key-stagger': `${TIMING.keyStagger}ms`,
         }}
       >
         <div className="launch__scene" data-scene key={layout}>
-          <Device layout={layout}>
-            <ScreenPopup layout={layout} />
-          </Device>
-          {hasKeys && <Keyboard layout={layout} onLogin={onLogin} />}
-          {STICKERS[layout].map((s, i) => (
-            <Sticker key={s.id} {...s} layout={layout} delay={stickersAt + i * TIMING.stickerStagger} />
-          ))}
+          {phase !== 'launch' && <Preloader layout={layout} loader={loader} morphing={phase === 'morph'} />}
+
+          {phase === 'launch' && (
+            <>
+              <Device layout={layout}>
+                <ScreenPopup layout={layout} />
+              </Device>
+              {hasKeys && <Keyboard layout={layout} onLogin={goHome} />}
+              {STICKERS[layout].map((s, i) => (
+                <Sticker key={s.id} {...s} layout={layout} delay={stickersAt + i * TIMING.stickerStagger} />
+              ))}
+            </>
+          )}
         </div>
       </div>
+
+      {phase === 'launch' && <Sidebar delay={TIMING.sidebar} />}
     </div>
   );
 }

@@ -1,8 +1,4 @@
 import { u } from './scale';
-
-// The monitor shell (desktop) or the top half of the flip phone (phone, tablet).
-// Whatever you pass as children sits on top of it, positioned in the device's
-// own coordinates (0,0 = device's top-left corner).
 export default function Device({ layout = 'desktop', children }) {
   if (layout === 'tablet') {
     return (

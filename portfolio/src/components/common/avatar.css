@@ -1,0 +1,18 @@
+/* Outline and shadow are proportional to the circle (Figma: 1.48px and
+   5.46px on a 140.7px circle), so the avatar looks the same at any size. */
+.avatar {
+  width: var(--avatar-size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #FC4D91;
+  border: max(1px, calc(var(--avatar-size) * 0.0105)) solid var(--pitchBlack, #000);
+  box-shadow: calc(var(--avatar-size) * 0.0388) calc(var(--avatar-size) * 0.0388) 0 var(--mediumBlack, #191919);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+/* where the character sits inside the 380 × 380 Figma component */
+.avatar__character {
+  position: absolute;
+  left: 8.2%;
+  top: 7.7%;
+}

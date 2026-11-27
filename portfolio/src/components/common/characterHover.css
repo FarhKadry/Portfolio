@@ -1,0 +1,9 @@
+/* The motion is driven frame by frame from JS, so the global
+   "* { transition: all 300ms }" must not smooth (and lag) it. */
+.character-hover,
+.character-hover * {
+  transition: none !important;
+}
+.character-hover svg {
+  position: static;
+}

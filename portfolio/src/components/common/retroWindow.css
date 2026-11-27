@@ -1,0 +1,48 @@
+/* Override these variables on the element (or a parent class) to size it. */
+.window {
+  --win-bg: var(--accent2Lvl1, #06B8BA);
+  --win-border: 1px;
+  --win-radius: 30px;
+  --win-shadow-x: 2px;
+  --win-shadow-y: 2px;
+  --head-h: 43px;
+  --head-pad: 18px;
+  --head-border: 1px;
+  --head-shadow: 4px;
+  --dot: 18px;
+  --dot-gap: 10px;
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--win-bg);
+  border: var(--win-border) solid var(--mediumBlack, #191919);
+  border-radius: var(--win-radius);
+  box-shadow: var(--win-shadow-x) var(--win-shadow-y) 0 var(--mediumBlack, #191919);
+}
+.window__head {
+  flex: none;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--dot-gap);
+  height: var(--head-h);
+  padding: 0 var(--head-pad);
+  background: var(--thirdBg, #FFFCE5);
+  border-bottom: var(--head-border) solid var(--mediumBlack, #191919);
+  box-shadow: 0 var(--head-shadow) 0 var(--mediumBlack, #191919);
+}
+.window__dot {
+  flex: none;
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+}
+.window__dot--pink { background: var(--accent1Lvl2, #F4538A); }
+.window__dot--green { background: #78EB7B; }
+.window__dot--yellow { background: var(--extraAccent, #F5DD61); }
+.window__body {
+  flex: 1;
+  min-height: 0;
+}

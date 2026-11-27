@@ -4,7 +4,7 @@
     box-sizing: border-box;
     transition: all 300ms ease-in-out;
     scroll-behavior: smooth;
-    font-family: "Biroclage grotesque", sans-serif;
+    font-family: "Bricolage Grotesque", sans-serif;
     position: relative;
 }
 ::-webkit-scrollbar {
@@ -13,7 +13,7 @@
 }
 ::-webkit-scrollbar-track {
   background: transparent;
-  
+
 }
 ::-webkit-scrollbar-thumb {
   background: #FFF4E2;
@@ -48,11 +48,24 @@ h5{
 h6{
   font-size: 24px;
 }
+
+/* ---------- Font families ---------- */
+.font_bricolage{
+  font-family: "Bricolage Grotesque", sans-serif;
+}
+.font_pacifico{
+  font-family: "Pacifico", cursive;
+}
+
+/* ---------- Font weights ---------- */
 .text_extraBold{
   font-weight: 900;
 }
 .text_bold{
   font-weight: 700;
+}
+.text_semiBold{
+  font-weight: 600;
 }
 .text_medium{
   font-weight: 500;
@@ -63,6 +76,26 @@ h6{
 .text_light{
   font-weight: 300
 }
+
+/* ---------- Font colors (one per color in root.css) ---------- */
+.font_mainBg{
+  color: var(--mainBg);
+}
+.font_secondaryBg{
+  color: var(--secondaryBg);
+}
+.font_thirdBg{
+  color: var(--thirdBg);
+}
+.font_lightBlack{
+  color: var(--lightBlack);
+}
+.font_mediumBlack{
+  color: var(--mediumBlack);
+}
+.font_pitchBlack{
+  color: var(--pitchBlack);
+}
 .font_pink1{
   color: var(--accent1Lvl1)
 }
@@ -70,11 +103,16 @@ h6{
   color: var(--accent1Lvl2);
 }
 .font_teal1{
-  color: var(--accent2Lvl2);
+  color: var(--accent2Lvl1);
 }
 .font_teal2{
   color: var(--accent2Lvl2);
 }
+.font_yellow{
+  color: var(--extraAccent);
+}
+
+/* ---------- Shadows ---------- */
 .text_shadow1{
   text-shadow: 0 11.54px 0 var(--mediumBlack);
 }
@@ -83,4 +121,15 @@ h6{
 }
 .text_shadow3{
   text-shadow: 3px 4px 0 var(--mediumBlack);
+}
+/* Scales with the font size, so it stays right at any screen size */
+.text_shadowEm{
+  text-shadow: 0 0.11em 0 var(--mediumBlack);
+}
+
+/* ---------- Outline ---------- */
+/* Outline drawn behind the fill (like Figma's "outside" stroke); scales with font size */
+.text_strokeEm{
+  -webkit-text-stroke: 0.0625em var(--mediumBlack);
+  paint-order: stroke fill;
 }
